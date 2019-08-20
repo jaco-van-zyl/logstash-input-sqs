@@ -49,29 +49,34 @@ The "consumer" identity must have the following permissions on the queue:
  * `sqs:ListQueues`
  * `sqs:ReceiveMessage`
 
-Typically, you should setup an IAM policy, create a user and apply the IAM policy to the user.
+Typically, you should setup an IAM policy, create a user and apply the IAM policy to the user or if your Logstash server is on EC2/ECS you can add the Policy to a Role.
 A sample policy is as follows:
 [source,json]
-    {
-      "Statement": [
+{
+    "Version": "2012-10-17",
+    "Statement": [
         {
-          "Action": [
-            "sqs:ChangeMessageVisibility",
-            "sqs:ChangeMessageVisibilityBatch",
-            "sqs:DeleteMessage",
-            "sqs:DeleteMessageBatch",
-            "sqs:GetQueueAttributes",
-            "sqs:GetQueueUrl",
-            "sqs:ListQueues",
-            "sqs:ReceiveMessage"
-          ],
-          "Effect": "Allow",
-          "Resource": [
-            "arn:aws:sqs:us-east-1:123456789012:Logstash"
-          ]
+            "Effect": "Allow",
+            "Action": [
+                "sqs:DeleteMessage",
+                "sqs:GetQueueUrl",
+                "sqs:ChangeMessageVisibility",
+                "sqs:DeleteMessageBatch",
+                "sqs:ReceiveMessage",
+                "sqs:GetQueueAttributes",
+                "sqs:ChangeMessageVisibilityBatch"
+            ],
+            "Resource": [
+                "arn:aws:sqs:us-east-1:123456789012:Logstash"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Action": "sqs:ListQueues",
+            "Resource": "*"
         }
-      ]
-    }
+    ]
+}
 
 See http://aws.amazon.com/iam/ for more details on setting up AWS identities.
 
